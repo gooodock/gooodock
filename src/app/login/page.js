@@ -11,12 +11,30 @@ export default function LoginPage() {
 
   const handleLogin = (e) => {
     e.preventDefault(); // 페이지 새로고침 방지
-    if (id && pw) {
-      setIsLoggedIn(true);
-    } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const pwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+    if (!id || !pw) {
       alert('아이디와 비밀번호를 입력해주세요!');
+    return;
     }
+
+    if(!emailRegex.test(id)){
+      alert('올바른 이메일 형식이 아닙니다.');
+      return;
+    }
+
+    if(!pwRegex.test(pw)){
+      alert('비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.');
+      return;
+    }
+
+    setIsLoggedIn(true);
   };
+  const goToHome = () => {
+    router.push('/');
+  };
+
   //구독 정보 페이지로
   const goToSubscription = () => {
     router.push(`/subscription?user=${id}`);
@@ -26,15 +44,16 @@ export default function LoginPage() {
     <div style={{ padding: '20px', textAlign: 'center' }}>
       {!isLoggedIn ? (
         // 로그인 전 화면
-        <form onSubmit={handleLogin} style={{ display: 'inline-block', textAlign: 'left' }}>
+        <form onSubmit={handleLogin} style={{ display: 'inline-block', textAlign: 'left', border: '1px solid #ccc', padding: '20px', borderRadius: '8px' }}>
           <h2>로그인</h2>
           <div>
             <input
-              type="text"
-              placeholder="아이디"
+              type="email"
+              placeholder="example@mail.com"
               value={id}
               onChange={(e) => setId(e.target.value)}
-              style={{ display: 'block', marginBottom: '10px', padding: '8px' }}
+              required
+              style={{ display: 'block', marginBottom: '10px', padding: '8px', width: '200px' }}
             />
           </div>
           <div>
@@ -43,12 +62,23 @@ export default function LoginPage() {
               placeholder="비밀번호"
               value={pw}
               onChange={(e) => setPw(e.target.value)}
-              style={{ display: 'block', marginBottom: '10px', padding: '8px' }}
+              style={{ display: 'block', marginBottom: '10px', padding: '8px', width: '200px' }}
             />
+            <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+              * 영문, 숫자, 특수문자 조합 8자 이상
+            </p>
           </div>
-          <button type="submit" style={{ width: '100%', padding: '10px', cursor: 'pointer', backgroundColor: '#7c3aed', border: 'none', borderRadius: '4px' }}>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '10px'}}>
+          <button type="submit" style={{ width: '100%', padding: '10px', cursor: 'pointer', backgroundColor: '#7c3aed', color: '#fff', border: 'none', borderRadius: '4px' }}>
             로그인
           </button>
+          <button 
+            type="button"
+            onClick={goToHome}
+            style={{width: '100%', padding: '10px', cursor: 'pointer', backgroundColor: '#7c3aed', color: '#fff', border: 'none', borderRadius: '4px' }}>
+            메인으로
+          </button>
+          </div>
         </form>
       ) : (
         // 로그인 후 화면
