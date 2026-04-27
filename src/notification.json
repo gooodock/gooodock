@@ -1,10 +1,23 @@
 {
   "notification": [
     {
-      "id": 1,
+      "id": "1",
       "text": "유튜브 19,800원 5/2일 결제 예정입니다.",
       "date": "2026-04-28",
-      "read" : true
+      "read": false
+    },
+    {
+      "id": "2",
+      "text": "넷플릭스 7,000원 5/4일 결제 예정입니다.",
+      "date": "2026-04-28",
+      "read": true
+    },
+    {
+      "id": "3",
+      "text": "네이버 멤버십 플러스 4,900원 5/13일 결제 예정입니다.",
+      "date": "2026-04-28",
+      "read": false
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
