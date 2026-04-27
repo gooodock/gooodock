@@ -1,11 +1,13 @@
 'use client'; 
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
 
   const handleLogin = (e) => {
     e.preventDefault(); // 페이지 새로고침 방지
@@ -16,7 +18,7 @@ export default function LoginPage() {
     }
   };
   const goToNotification = () => {
-    router.push('/notification');
+    router.push(`/notification?user=${id}`);
   };
 
   return (
@@ -51,7 +53,7 @@ export default function LoginPage() {
         // 로그인 후 화면
         <div>
           <h1>안녕하세요, name님!</h1>
-          <p>성공적으로 접속하셨습니다.</p>
+          <p>Gooodock에 접속됐습니다.</p>
           <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <button 
               onClick={goToNotification} 
