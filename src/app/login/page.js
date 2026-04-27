@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [id, setId] = useState('');
-  const [pw, setPw] = useState('');
+  const [id, setId] = useState('1@a.com');
+  const [pw, setPw] = useState(('1234!@asdf'));
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
@@ -29,13 +29,18 @@ export default function LoginPage() {
       return;
     }
 
+    const userName = id.split('@')[0];
+    localStorage.setItem('userName', userName);
+
     setIsLoggedIn(true);
   };
+
+  //메인 페이지로
   const goToHome = () => {
     router.push('/');
   };
 
-  //구독 정보 페이지로
+  //구독정보 페이지로
   const goToSubscription = () => {
     router.push(`/subscription?user=${id}`);
   };
@@ -83,7 +88,7 @@ export default function LoginPage() {
       ) : (
         // 로그인 후 화면
         <div>
-          <h1>안녕하세요, name님!</h1>
+          <h1>안녕하세요, {id.split('@')[0]}님!</h1>
           <p>Gooodock에 접속됐습니다.</p>
           <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <button 

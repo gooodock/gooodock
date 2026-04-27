@@ -6,12 +6,17 @@ import { notificationApi } from "../api/NotificationApi";
 export default function Header({ title }) {
   const router = useRouter();
   const [hasUnread, setHasUnread] = useState(false);
+  const [userName, setUserName]= useState('');
 
   // TODO: 실제 로그인 연동 시 user store나 세션에서 가져오기
-  const userName = "User";
+  // const userName = "User";
 
-  // 안읽은 알림 있는지 체크
   useEffect(() => {
+    const savedName = localStorage.getItem('userName');
+    if(savedName){
+      setUserName(savedName);
+    }
+    // 안읽은 알림 있는지 체크
     const checkUnread = async () => {
       try {
         const data = await notificationApi.getPost();
@@ -26,6 +31,7 @@ export default function Header({ title }) {
 
   const handleLogout = () => {
     if (confirm("로그아웃 하시겠습니까?")) {
+      localStorage.removeItem('userName');
       // TODO: 실제 로그아웃 로직 (토큰 제거 등)
       router.push("/login");
     }
