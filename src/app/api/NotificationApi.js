@@ -10,3 +10,16 @@ export const notificationApi = {
     return res.json();
   }
 }
+
+export const notificationReadApi = {
+  setPost: async(id, read) => {
+    const readAPI = API + `/${id}`;
+    const res = await fetch(readAPI, {
+      method: "PATCH",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ read: read }),
+    });
+
+    return res.json();
+  }
+}
