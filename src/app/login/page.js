@@ -1,4 +1,4 @@
-'use client'; // 클라이언트 컴포넌트 설정
+'use client'; 
 
 import { useState } from 'react';
 
@@ -10,10 +10,13 @@ export default function LoginPage() {
   const handleLogin = (e) => {
     e.preventDefault(); // 페이지 새로고침 방지
     if (id && pw) {
-      setIsLoggedIn(true); // 아이디와 비번이 입력되었다면 로그인 성공 처리
+      setIsLoggedIn(true);
     } else {
       alert('아이디와 비밀번호를 입력해주세요!');
     }
+  };
+  const goToNotification = () => {
+    router.push('/notification');
   };
 
   return (
@@ -40,19 +43,29 @@ export default function LoginPage() {
               style={{ display: 'block', marginBottom: '10px', padding: '8px' }}
             />
           </div>
-          <button type="submit" style={{ width: '100%', padding: '10px', cursor: 'pointer' }}>
-            로그인하기
+          <button type="submit" style={{ width: '100%', padding: '10px', cursor: 'pointer', backgroundColor: '#7c3aed', border: 'none', borderRadius: '4px' }}>
+            로그인
           </button>
         </form>
       ) : (
         // 로그인 후 화면
         <div>
-          <h1>안녕하세요, {id}님!</h1>
-          <br/>
-          <p>성공적으로 접속하셨습니다. 😊</p>
-          <button onClick={() => setIsLoggedIn(false)} style={{ marginTop: '20px' }}>
-            로그아웃
-          </button>
+          <h1>안녕하세요, name님!</h1>
+          <p>성공적으로 접속하셨습니다.</p>
+          <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            <button 
+              onClick={goToNotification} 
+              style={{ padding: '10px 20px', cursor: 'pointer', backgroundColor: '#7c3aed', color: '#fff', border: 'none', borderRadius: '4px' }}
+            >
+              구독정보
+            </button>
+            <button 
+              onClick={() => setIsLoggedIn(false)} 
+              style={{ padding: '10px 20px', cursor: 'pointer', backgroundColor: '#7c3aed', color: '#fff', border: 'none', borderRadius: '4px' }}
+            >
+              로그아웃
+            </button>
+          </div>
         </div>
       )}
     </div>
