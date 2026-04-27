@@ -1,0 +1,66 @@
+{
+  "subscriptions": [
+    {
+      "id": "1",
+      "type": "YouTube",
+      "date": "2022-03-24",
+      "price": "19800"
+    },
+    {
+      "id": "2",
+      "type": "TVING",
+      "date": "2019-07-09",
+      "price": "14900"
+    },
+    {
+      "id": "3",
+      "type": "NETFLIX",
+      "date": "2024-05-28",
+      "price": "5900"
+    },
+    {
+      "id": "4",
+      "type": "Wavve",
+      "date": "2024-12-03",
+      "price": "19800"
+    },
+    {
+      "id": "5",
+      "type": "Claude",
+      "date": "2025-10-18",
+      "price": "33750"
+    },
+    {
+      "id": "6",
+      "type": "쿠팡",
+      "date": "2026-04-27",
+      "price": "19900"
+    },
+    {
+      "id": "4GRi96HfaHM",
+      "type": "네이버멤버십",
+      "price": "4900",
+      "date": "2026-04-27"
+    }
+  ],"notification": [
+    {
+      "id": "1",
+      "text": "유튜브 19,800원 5/2일 결제 예정입니다.",
+      "date": "2026-04-28",
+      "read": true
+    },
+    {
+      "id": "2",
+      "text": "넷플릭스 7,000원 5/4일 결제 예정입니다.",
+      "date": "2026-04-28",
+      "read": true
+    },
+    {
+      "id": "3",
+      "text": "네이버 멤버십 플러스 4,900원 5/13일 결제 예정입니다.",
+      "date": "2026-04-28",
+      "read": false
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
