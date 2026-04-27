@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "mock": "json-server --watch src/subscription.json --port 4000"
+    "mock": "json-server --watch src/db.json --port 4000"
   },
   "dependencies": {
     "next": "16.2.4",
