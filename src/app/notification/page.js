@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { notificationApi, notificationReadApi } from "../api/NotificationApi";
+import Header from "../components/Header";
 
 const divStyle = {
     backgroundColor: '#09090b',
@@ -79,7 +80,9 @@ export default function NotificationPage() {
   if (isError) return <div style={errorStyle}>데이터를 가져오는데 실패했습니다.</div>;
 
   return (
+    
     <div style={divStyle}>
+      <Header title="구독 관리" showNotification={false}/>
       <h1 style={h1Style}>알림 센터</h1>
       
         {notifications.length === 0 ? (<p>새로운 알림이 없습니다.</p>) : (
