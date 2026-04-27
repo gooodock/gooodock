@@ -1,11 +1,13 @@
 'use client'; 
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
 
   const handleLogin = (e) => {
     e.preventDefault(); // 페이지 새로고침 방지
@@ -15,8 +17,9 @@ export default function LoginPage() {
       alert('아이디와 비밀번호를 입력해주세요!');
     }
   };
-  const goToNotification = () => {
-    router.push('/notification');
+  //구독 정보 페이지로
+  const goToSubscription = () => {
+    router.push(`/subscription?user=${id}`);
   };
 
   return (
@@ -51,10 +54,10 @@ export default function LoginPage() {
         // 로그인 후 화면
         <div>
           <h1>안녕하세요, name님!</h1>
-          <p>성공적으로 접속하셨습니다.</p>
+          <p>Gooodock에 접속됐습니다.</p>
           <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <button 
-              onClick={goToNotification} 
+              onClick={goToSubscription} 
               style={{ padding: '10px 20px', cursor: 'pointer', backgroundColor: '#7c3aed', color: '#fff', border: 'none', borderRadius: '4px' }}
             >
               구독정보
