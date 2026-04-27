@@ -17,8 +17,9 @@ export default function LoginPage() {
       alert('아이디와 비밀번호를 입력해주세요!');
     }
   };
-  const goToNotification = () => {
-    router.push(`/notification?user=${id}`);
+  //구독 정보 페이지로
+  const goToSubscription = () => {
+    router.push(`/subscription?user=${id}`);
   };
 
   return (
@@ -56,7 +57,7 @@ export default function LoginPage() {
           <p>Gooodock에 접속됐습니다.</p>
           <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <button 
-              onClick={goToNotification} 
+              onClick={goToSubscription} 
               style={{ padding: '10px 20px', cursor: 'pointer', backgroundColor: '#7c3aed', color: '#fff', border: 'none', borderRadius: '4px' }}
             >
               구독정보
