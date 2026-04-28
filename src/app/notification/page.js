@@ -81,8 +81,9 @@ export default function NotificationPage() {
 
   return (
     
-    <div style={divStyle}>
+    <div>
       <Header title="구독 관리" showNotification={false}/>
+      <div style={divStyle}>
       <h1 style={h1Style}>알림 센터</h1>
       
         {notifications.length === 0 ? (<p>새로운 알림이 없습니다.</p>) : (
@@ -101,6 +102,7 @@ export default function NotificationPage() {
         </div>
       ))
     )}
+    </div>
   </div>
 );
 }
