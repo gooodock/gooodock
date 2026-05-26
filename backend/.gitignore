@@ -41,3 +41,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Project Root ###
+.idea/
+frontend/.next/
+frontend/node_modules/.idea/
