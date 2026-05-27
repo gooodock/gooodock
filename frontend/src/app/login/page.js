@@ -7,6 +7,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('test@gmail.com');
   const [password, setPassword] = useState('test@1234');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
   const router = useRouter();
 
   const handleLogin = async (e) => {
@@ -41,10 +42,12 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
+        const data = await response.json(); 
+        
         alert('로그인에 성공했습니다!');
         
-        const userName = email.split('@')[0];
-        localStorage.setItem('userName', userName);
+        setUserName(data.name); 
+        localStorage.setItem('userName', data.name);
         setIsLoggedIn(true);
       } else if (response.status === 401) {
         alert('아이디 또는 비밀번호가 일치하지 않습니다.');
@@ -107,7 +110,7 @@ export default function LoginPage() {
       ) : (
         // 로그인 후 화면
         <div>
-          <h1>안녕하세요, {id.split('@')[0]}님!</h1>
+          <h1>안녕하세요, {userName}님!</h1>
           <p><span style={{color: '#7c3aed'}}>G</span>
   <span style={{color: '#fafafa'}}>o</span>
   <span style={{color: '#fafafa'}}>o</span>

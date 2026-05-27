@@ -34,6 +34,7 @@ public class LoginController extends HttpServlet {
             BufferedReader reader = request.getReader();
             StringBuilder jsonBuffer = new StringBuilder();
             String line;
+            PrintWriter out = response.getWriter();
             while ((line = reader.readLine()) != null) {
                 jsonBuffer.append(line);
             }
@@ -50,8 +51,10 @@ public class LoginController extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("loginUser", loginMember);
                 session.setMaxInactiveInterval(30 * 60);
+                out.print("{\"success\": true, \"name\": \"" + loginMember.getName() + "\"}");
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                out.print("{\"success\": false, \"message\": \"로그인 실패\"}");
             }
 
         } catch (Exception e) {
