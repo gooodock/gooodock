@@ -4,45 +4,64 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [id, setId] = useState('1@a.com');
-  const [pw, setPw] = useState(('1234!@asdf'));
+  const [email, setEmail] = useState('test@gmail.com');
+  const [password, setPassword] = useState('test@1234');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault(); // 페이지 새로고침 방지
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const pwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
-    if (!id || !pw) {
+    if (!email || !password) {
       alert('아이디와 비밀번호를 입력해주세요!');
-    return;
+      return;
     }
 
-    if(!emailRegex.test(id)){
+    if (!emailRegex.test(email)) {
       alert('올바른 이메일 형식이 아닙니다.');
       return;
     }
 
-    if(!pwRegex.test(pw)){
+    if (!pwRegex.test(password)) {
       alert('비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.');
       return;
     }
 
-    const userName = id.split('@')[0];
-    localStorage.setItem('userName', userName);
+    try {
+      const response = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email, password: password }), 
+        credentials: 'include',
+      });
 
-    setIsLoggedIn(true);
+      if (response.ok) {
+        alert('로그인에 성공했습니다!');
+        
+        const userName = email.split('@')[0];
+        localStorage.setItem('userName', userName);
+        setIsLoggedIn(true);
+      } else if (response.status === 401) {
+        alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+      } else {
+        alert('서버 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+      }
+    } catch (error) {
+      alert('서버와 연결할 수 없습니다. 톰캣 서버 구동 상태를 확인해 주세요.');
+    }
   };
 
-  //메인 페이지로
   const goToHome = () => {
     router.push('/');
   };
 
-  //구독정보 페이지로
   const goToSubscription = () => {
-    router.push(`/subscription?user=${id}`);
+    router.push('/subscription'); 
   };
 
   return (
@@ -55,8 +74,8 @@ export default function LoginPage() {
             <input
               type="email"
               placeholder="example@mail.com"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               style={{ display: 'block', marginBottom: '10px', padding: '8px', width: '200px' }}
             />
@@ -65,8 +84,8 @@ export default function LoginPage() {
             <input
               type="password"
               placeholder="비밀번호"
-              value={pw}
-              onChange={(e) => setPw(e.target.value)}
+              value={password} // 💡 password 변수 매핑
+              onChange={(e) => setPassword(e.target.value)}
               style={{ display: 'block', marginBottom: '10px', padding: '8px', width: '200px' }}
             />
             <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
