@@ -1,10 +1,11 @@
-const API = 'http://localhost:4000/notification';
+const API = 'http://localhost:8080/api/notification';
 
 export const notificationApi = {
   getPost: async() => {
     const res = await fetch(API, {
       method: "GET",
       headers: {"Content-Type": "application/json"},
+      credentials: 'include',
     });
 
     return res.json();
@@ -12,12 +13,12 @@ export const notificationApi = {
 }
 
 export const notificationReadApi = {
-  setPost: async(id, read) => {
-    const readAPI = API + `/${id}`;
-    const res = await fetch(readAPI, {
-      method: "PATCH",
+  setPost: async(notificationIdx, readYn) => {
+    const res = await fetch(API, {
+      method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ read: read }),
+      credentials: 'include',
+      body: JSON.stringify({notificationIdx: notificationIdx, readYn: readYn }),
     });
 
     return res.json();

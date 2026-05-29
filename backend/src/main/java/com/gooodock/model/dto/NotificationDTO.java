@@ -2,12 +2,15 @@ package com.gooodock.model.dto;
 
 import java.time.LocalDate;
 
-public class NotificationDTO {
+public class NotificationDTO{
     private int notificationIdx;
     private int memberIdx;
     private int subscribeIdx;
     private String readYn;
     private LocalDate readDate;
+    private String platformName;
+    private int platformPrice;
+    private LocalDate updateSubDate;
 
     public int getNotificationIdx() {
         return notificationIdx;
@@ -49,15 +52,43 @@ public class NotificationDTO {
         this.readDate = readDate;
     }
 
+    public String getPlatformName() {
+        return platformName;
+    }
+
+    public void setPlatformName(String platformName) {
+        this.platformName = platformName;
+    }
+
+    public int getPlatformPrice() {
+        return platformPrice;
+    }
+
+    public void setPlatformPrice(int platformPrice) {
+        this.platformPrice = platformPrice;
+    }
+
+    public LocalDate getUpdateSubDate() {
+        return updateSubDate;
+    }
+
+    public void setUpdateSubDate(LocalDate updateSubDate) {
+        this.updateSubDate = updateSubDate;
+    }
+
     public NotificationDTO() {
     }
 
-    public NotificationDTO(int notificationIdx, int memberIdx, int subscribeIdx, String readYn, LocalDate readDate) {
+    public NotificationDTO(int notificationIdx, int memberIdx, String readYn, LocalDate readDate,
+                           int subscribeIdx, String platformName, int platformPrice, LocalDate updateSubDate) {
         this.notificationIdx = notificationIdx;
         this.memberIdx = memberIdx;
-        this.subscribeIdx = subscribeIdx;
         this.readYn = readYn;
         this.readDate = readDate;
+        this.subscribeIdx = subscribeIdx;
+        this.platformName = platformName;
+        this.platformPrice = platformPrice;
+        this.updateSubDate = updateSubDate;
     }
 
 

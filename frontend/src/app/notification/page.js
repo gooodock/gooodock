@@ -25,7 +25,6 @@ const errorStyle = {
     padding: '20px',
     marginBottom: '15px', 
     border: '1px solid rgba(255, 255, 255, 0.05)',
-    padding: '20px',
     textAlign: 'center',
     color: 'red'
 };
@@ -58,22 +57,36 @@ export default function NotificationPage() {
     }
   };
 
-  const readData = async (id, read) => {
-    try {
-      await notificationReadApi.setPost(id, !read);
-      setNotifications(noti => 
-        noti.map(item => 
-          item.id === id ? { ...item, read: !read } : item
-        )
-      );
-    }catch (error) {
-      alert('상태 변경에 실패하였습니다.');
-    } 
-  }
+    const readData = async (id, isReadBoolean) => {
+        try {
+            const nextReadBoolean = !isReadBoolean;
+            const sendReadYn = nextReadBoolean ? 'Y' : 'N';
+
+            await notificationReadApi.setPost(id, sendReadYn);
+
+            setNotifications(noti =>
+                noti.map(item =>
+                    item.id === id ? { ...item, read: nextReadBoolean } : item
+                )
+            );
+        } catch (error) {
+            alert('상태 변경에 실패하였습니다.');
+        }
+    }
 
   useEffect(() => {
     loadData();
   }, []);
+
+  const formatPrice = (price) => {
+    return price ? price.toLocaleString() : '0';
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+  };
 
   if (isLoading) return <div style={loadingStyle}>데이터를 불러오는 중입니다...</div>;
   
@@ -86,21 +99,36 @@ export default function NotificationPage() {
       <h1 style={h1Style}>알림 센터</h1>
       
         {notifications.length === 0 ? (<p>새로운 알림이 없습니다.</p>) : (
-        notifications.map((item) => (
-        <div key={item.id} style={loadingStyle}>
-          <p>{item.text}</p>
-          
-          <div style={{ marginTop: '20px' }}>
-            <span style={{ fontSize: '12px', color: '#fafafa' }}>
-              {String(new Date().toLocaleDateString())}
-            </span>
-            <button onClick={() => readData(item.id, item.read)}>
-              {item.read ? '읽음' : '안 읽음'}
-            </button>
-          </div>
-        </div>
-      ))
-    )}
+        notifications.map((item) => {
+    const customText = `[${item.platformName}] 구독 서비스의 결제 예정일이 다가옵니다. 이번 달 결제 금액은 ${formatPrice(item.platformPrice)}원입니다.`;
+
+    return (
+        <div key={item.notificationIdx} style={loadingStyle}>
+            <p style={{ fontWeight: 'bold', fontSize: '16px' }}>{customText}</p>
+            <div style={{ marginTop: '20px' }}>
+                <span style={{ fontSize: '12px', color: '#a1a1aa' }}>
+                  결제 예정일: {formatDate(item.updateSubDate)}
+                </span>
+                <div style={{ marginTop: '10px' }}>
+                    <button
+                        onClick={() => readData(item.id, item.read)}
+                        style={{
+                            padding: '6px 12px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            backgroundColor: item.read ? '#4b5563' : '#7c3aed',
+                            color: '#fff',
+                            border: 'none'
+                        }}
+                    >
+                        {item.read ? '읽음' : '안 읽음'}
+                    </button>
+                </div>
+            </div>
+      </div>
+    ); 
+  })
+)}
   </div>
 );
 }
