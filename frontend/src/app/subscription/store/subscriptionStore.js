@@ -18,6 +18,14 @@ export const useSubscriptionStore = create((set, get) => ({
       subscriptions: state.subscriptions.filter((item) => item.id !== id),
     })),
 
+  // 항목 날짜 수정 (id 기준으로 date 교체)
+  updateSubscriptionDate: (id, newDate) =>
+    set((state) => ({
+      subscriptions: state.subscriptions.map((item) =>
+        item.id === id ? { ...item, date: newDate } : item
+      ),
+    })),
+
   // 총합 계산 (price가 문자열로 들어오니까 Number로 변환)
   getTotalPrice: () => {
     const { subscriptions } = get();
