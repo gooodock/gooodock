@@ -10,6 +10,10 @@ export default function SubscriptionPage() {
   // 입력 폼 상태
   const [form, setForm] = useState({ type: "", price: "", date: "" });
 
+  // 날짜 인라인 편집 상태 (편집 중인 행의 id와 입력값)
+  const [editingId, setEditingId] = useState(null);
+  const [editDate, setEditDate] = useState("");
+
   // zustand store에서 상태와 액션 가져오기
   const subscriptions = useSubscriptionStore((state) => state.subscriptions);
   const setSubscriptions = useSubscriptionStore(
@@ -20,6 +24,9 @@ export default function SubscriptionPage() {
   );
   const removeSubscription = useSubscriptionStore(
     (state) => state.removeSubscription,
+  );
+  const updateSubscriptionDate = useSubscriptionStore(
+    (state) => state.updateSubscriptionDate,
   );
   const getTotalPrice = useSubscriptionStore((state) => state.getTotalPrice);
 
@@ -53,14 +60,9 @@ export default function SubscriptionPage() {
       return;
     }
 
-    const nextId =
-      subscriptions.length > 0
-        ? Math.max(...subscriptions.map((s) => s.id)) + 1
-        : 1;
-
     try {
-      const created = await subscriptionApi.add({ id: nextId, ...form });
-      addSubscription(created);
+      await subscriptionApi.add(form);
+      await loadData(); // 추가 후 목록을 다시 불러와 DB가 만든 id를 반영
       setForm({ type: "", price: "", date: "" });
     } catch (error) {
       console.error("추가 실패:", error);
@@ -78,6 +80,35 @@ export default function SubscriptionPage() {
     } catch (error) {
       console.error("삭제 실패:", error);
       alert("삭제에 실패했습니다.");
+    }
+  };
+
+  // 날짜수정 버튼 클릭 → 편집 모드 진입
+  const handleEditStart = (item) => {
+    setEditingId(item.id);
+    setEditDate(item.date);
+  };
+
+  // 편집 취소
+  const handleEditCancel = () => {
+    setEditingId(null);
+    setEditDate("");
+  };
+
+  // 날짜 저장
+  const handleEditSave = async (id) => {
+    if (!editDate) {
+      alert("날짜를 선택해주세요.");
+      return;
+    }
+    try {
+      await subscriptionApi.updateDate(id, editDate);
+      updateSubscriptionDate(id, editDate);
+      setEditingId(null);
+      setEditDate("");
+    } catch (error) {
+      console.error("날짜 수정 실패:", error);
+      alert("날짜 수정에 실패했습니다.");
     }
   };
 
@@ -164,14 +195,50 @@ export default function SubscriptionPage() {
                   <td style={tdStyle}>
                     {Number(item.price).toLocaleString()}원
                   </td>
-                  <td style={tdStyle}>{item.date}</td>
                   <td style={tdStyle}>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      style={deleteButtonStyle}
-                    >
-                      삭제
-                    </button>
+                    {editingId === item.id ? (
+                      <input
+                        type="date"
+                        value={editDate}
+                        onChange={(e) => setEditDate(e.target.value)}
+                        style={inputStyle}
+                      />
+                    ) : (
+                      item.date
+                    )}
+                  </td>
+                  <td style={tdStyle}>
+                    {editingId === item.id ? (
+                      <>
+                        <button
+                          onClick={() => handleEditSave(item.id)}
+                          style={saveButtonStyle}
+                        >
+                          저장
+                        </button>
+                        <button
+                          onClick={handleEditCancel}
+                          style={cancelButtonStyle}
+                        >
+                          취소
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => handleEditStart(item)}
+                          style={editButtonStyle}
+                        >
+                          날짜수정
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          style={deleteButtonStyle}
+                        >
+                          삭제
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -232,6 +299,35 @@ const deleteButtonStyle = {
   backgroundColor: "var(--color-accent)",
   color: "var(--color-text)",
   border: "none",
+  borderRadius: "6px",
+  cursor: "pointer",
+};
+
+const editButtonStyle = {
+  padding: "6px 14px",
+  marginRight: "6px",
+  backgroundColor: "var(--color-primary)",
+  color: "var(--color-text)",
+  border: "none",
+  borderRadius: "6px",
+  cursor: "pointer",
+};
+
+const saveButtonStyle = {
+  padding: "6px 14px",
+  marginRight: "6px",
+  backgroundColor: "var(--color-primary)",
+  color: "var(--color-text)",
+  border: "none",
+  borderRadius: "6px",
+  cursor: "pointer",
+};
+
+const cancelButtonStyle = {
+  padding: "6px 14px",
+  backgroundColor: "transparent",
+  color: "var(--color-text-muted)",
+  border: "1px solid var(--color-border)",
   borderRadius: "6px",
   cursor: "pointer",
 };
