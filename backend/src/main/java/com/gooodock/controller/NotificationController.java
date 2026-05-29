@@ -47,7 +47,7 @@ public class NotificationController extends HttpServlet {
                 NotificationDTO item = result.get(i);
 
                 json.append("{")
-                        .append("\"id\":").append(item.getNotificationIdx()).append(",")
+                        .append("\"notificationIdx\":").append(item.getNotificationIdx()).append(",")
                         .append("\"platformName\":\"").append(item.getPlatformName()).append("\",")
                         .append("\"platformPrice\":").append(item.getPlatformPrice()).append(",")
                         .append("\"updateSubDate\":\"").append(item.getUpdateSubDate()).append("\",")

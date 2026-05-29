@@ -30,3 +30,15 @@ public class SubscriptionService {
         int result = subscriptionDAO.updateSubDate(subscribeIdx, memberIdx, newDate);
         return result > 0;
     }
+
+    public boolean addSubscription(String platformName, int platformPrice,
+                                   LocalDate subDate, int memberIdx) {
+        if (platformName == null || platformName.isBlank()
+                || platformPrice < 0 || subDate == null) {
+            return false;
+        }
+        int result = subscriptionDAO.insertSubscription(
+                platformName, platformPrice, subDate, memberIdx);
+        return result > 0;
+    }
+}
