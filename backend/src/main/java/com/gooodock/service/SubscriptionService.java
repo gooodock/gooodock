@@ -31,7 +31,6 @@ public class SubscriptionService {
         return result > 0;
     }
 
-    // 구독 추가 — 성공하면 true
     public boolean addSubscription(String platformName, int platformPrice,
                                    LocalDate subDate, int memberIdx) {
         if (platformName == null || platformName.isBlank()

@@ -1,3 +1,8 @@
+CREATE DATABASE subscription_db;
+GRANT ALL PRIVILEGES ON subscription_db.* TO 'ohgiraffers'@'%';
+SHOW GRANTS FOR 'ohgiraffers'@'%';
+USE subscription_db;
+
 -- 1. 회원 테이블 (tbl_member)
 CREATE TABLE tbl_member (
                             member_idx INT AUTO_INCREMENT COMMENT '회원IDX',
@@ -35,7 +40,7 @@ CREATE TABLE tbl_notification (
                                       REFERENCES tbl_subscription (subscribe_idx) ON DELETE CASCADE
 ) COMMENT='알림';
 
-INSERT INTO `subscription_db`.`tbl_member` (`member_idx`, `email`, `password`, `name`) VALUES ('1', 'test@gmail.com', 'test', '테스트');
+INSERT INTO `subscription_db`.`tbl_member` (`member_idx`, `email`, `password`, `name`) VALUES ('1', 'test@gmail.com', 'test@1234', '테스트');
 
 INSERT INTO `subscription_db`.`tbl_subscription` (`subscribe_idx`, `platform_name`, `platform_price`, `delete_yn`, `regist_sub_date`, `update_sub_date`, `member_idx`) VALUES ('2', 'Tving', '14900', 'N', '2019-07-09', '2026-05-26', '1');
 UPDATE `subscription_db`.`tbl_subscription` SET `platform_name` = 'YouTube' WHERE (`subscribe_idx` = '1');
@@ -44,7 +49,3 @@ INSERT INTO `subscription_db`.`tbl_subscription` (`subscribe_idx`, `platform_nam
 INSERT INTO `subscription_db`.`tbl_subscription` (`subscribe_idx`, `platform_name`, `platform_price`, `delete_yn`, `regist_sub_date`, `update_sub_date`, `member_idx`) VALUES ('5', 'Claude', '33750', 'N', '2025-10-18', '2026-05-26', '1');
 INSERT INTO `subscription_db`.`tbl_subscription` (`subscribe_idx`, `platform_name`, `platform_price`, `delete_yn`, `regist_sub_date`, `update_sub_date`, `member_idx`) VALUES ('6', 'Coupang', '19900', 'N', '2026-04-27', '2026-05-26', '1');
 INSERT INTO `subscription_db`.`tbl_subscription` (`subscribe_idx`, `platform_name`, `platform_price`, `delete_yn`, `regist_sub_date`, `update_sub_date`, `member_idx`) VALUES ('7', 'Naver Membership', '4900', 'N', '2026-04-27', '2026-05-26', '1');
-
-INSERT INTO `subscription_db`.`tbl_notification` (`notification_idx`, `member_idx`, `subscribe_idx`, `read_yn`) VALUES ('1', '1', '4', 'N');
-INSERT INTO `subscription_db`.`tbl_notification` (`notification_idx`, `member_idx`, `subscribe_idx`, `read_yn`) VALUES ('2', '1', '2', 'N');
-INSERT INTO `subscription_db`.`tbl_notification` (`notification_idx`, `member_idx`, `subscribe_idx`, `read_yn`) VALUES ('3', '1', '5', 'N');

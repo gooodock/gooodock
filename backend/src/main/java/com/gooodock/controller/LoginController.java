@@ -1,6 +1,7 @@
 package com.gooodock.controller;
 
 import com.gooodock.model.dao.MemberDAO;
+import com.gooodock.model.dao.NotificationDAO;
 import com.gooodock.model.dto.MemberDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,6 +20,7 @@ public class LoginController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final MemberDAO memberDAO = new MemberDAO();
+    private static final NotificationDAO notificationDAO = new NotificationDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -51,7 +53,17 @@ public class LoginController extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("loginUser", loginMember);
                 session.setMaxInactiveInterval(30 * 60);
+
+                NotificationDAO notificationDAO = new NotificationDAO();
+                int memberIdx = loginMember.getMemberIdx();
+
+                notificationDAO.deleteNotification(memberIdx);
+
+                notificationDAO.insertNotification(memberIdx);
+
                 out.print("{\"success\": true, \"name\": \"" + loginMember.getName() + "\"}");
+
+
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 out.print("{\"success\": false, \"message\": \"로그인 실패\"}");
@@ -63,7 +75,6 @@ public class LoginController extends HttpServlet {
         }
     }
 
-    // CORS 프리플라이트(Preflight) 요청 지원용
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
