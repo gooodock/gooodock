@@ -1,8 +1,11 @@
 package com.gooodock.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
-public class NotificationDTO{
+public class NotificationDTO {
+
     private int notificationIdx;
     private int memberIdx;
     private int subscribeIdx;
@@ -12,72 +15,36 @@ public class NotificationDTO{
     private int platformPrice;
     private LocalDate updateSubDate;
 
-    public int getNotificationIdx() {
-        return notificationIdx;
+    @JsonProperty("read")
+    public boolean isRead() {
+        return "Y".equals(this.readYn);
     }
 
-    public void setNotificationIdx(int notificationIdx) {
-        this.notificationIdx = notificationIdx;
-    }
+    public int getNotificationIdx() { return notificationIdx; }
+    public void setNotificationIdx(int notificationIdx) { this.notificationIdx = notificationIdx; }
 
-    public int getMemberIdx() {
-        return memberIdx;
-    }
+    public int getMemberIdx() { return memberIdx; }
+    public void setMemberIdx(int memberIdx) { this.memberIdx = memberIdx; }
 
-    public void setMemberIdx(int memberIdx) {
-        this.memberIdx = memberIdx;
-    }
+    public int getSubscribeIdx() { return subscribeIdx; }
+    public void setSubscribeIdx(int subscribeIdx) { this.subscribeIdx = subscribeIdx; }
 
-    public int getSubscribeIdx() {
-        return subscribeIdx;
-    }
+    public String getReadYn() { return readYn; }
+    public void setReadYn(String readYn) { this.readYn = readYn; }
 
-    public void setSubscribeIdx(int subscribeIdx) {
-        this.subscribeIdx = subscribeIdx;
-    }
+    public LocalDate getReadDate() { return readDate; }
+    public void setReadDate(LocalDate readDate) { this.readDate = readDate; }
 
-    public String getReadYn() {
-        return readYn;
-    }
+    public String getPlatformName() { return platformName; }
+    public void setPlatformName(String platformName) { this.platformName = platformName; }
 
-    public void setReadYn(String readYn) {
-        this.readYn = readYn;
-    }
+    public int getPlatformPrice() { return platformPrice; }
+    public void setPlatformPrice(int platformPrice) { this.platformPrice = platformPrice; }
 
-    public LocalDate getReadDate() {
-        return readDate;
-    }
+    public LocalDate getUpdateSubDate() { return updateSubDate; }
+    public void setUpdateSubDate(LocalDate updateSubDate) { this.updateSubDate = updateSubDate; }
 
-    public void setReadDate(LocalDate readDate) {
-        this.readDate = readDate;
-    }
-
-    public String getPlatformName() {
-        return platformName;
-    }
-
-    public void setPlatformName(String platformName) {
-        this.platformName = platformName;
-    }
-
-    public int getPlatformPrice() {
-        return platformPrice;
-    }
-
-    public void setPlatformPrice(int platformPrice) {
-        this.platformPrice = platformPrice;
-    }
-
-    public LocalDate getUpdateSubDate() {
-        return updateSubDate;
-    }
-
-    public void setUpdateSubDate(LocalDate updateSubDate) {
-        this.updateSubDate = updateSubDate;
-    }
-
-    public NotificationDTO() {
-    }
+    public NotificationDTO() {}
 
     public NotificationDTO(int notificationIdx, int memberIdx, String readYn, LocalDate readDate,
                            int subscribeIdx, String platformName, int platformPrice, LocalDate updateSubDate) {
@@ -90,6 +57,4 @@ public class NotificationDTO{
         this.platformPrice = platformPrice;
         this.updateSubDate = updateSubDate;
     }
-
-
 }

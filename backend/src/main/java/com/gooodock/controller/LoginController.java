@@ -3,96 +3,51 @@ package com.gooodock.controller;
 import com.gooodock.model.dao.MemberDAO;
 import com.gooodock.model.dao.NotificationDAO;
 import com.gooodock.model.dto.MemberDTO;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Map;
 
-@WebServlet("/api/login")
-public class LoginController extends HttpServlet {
+@RestController
+@RequestMapping("/api")
+public class LoginController {
 
-    private static final long serialVersionUID = 1L;
+    private final MemberDAO memberDAO;
+    private final NotificationDAO notificationDAO;
 
-    private static final MemberDAO memberDAO = new MemberDAO();
-    private static final NotificationDAO notificationDAO = new NotificationDAO();
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-        response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setContentType("application/json; charset=UTF-8");
-
-        try {
-            BufferedReader reader = request.getReader();
-            StringBuilder jsonBuffer = new StringBuilder();
-            String line;
-            PrintWriter out = response.getWriter();
-            while ((line = reader.readLine()) != null) {
-                jsonBuffer.append(line);
-            }
-            String requestBody = jsonBuffer.toString();
-
-            String email = extractValue(requestBody, "email");
-            String password = extractValue(requestBody, "password");
-
-
-            MemberDTO loginMember = memberDAO.loginCheck(email, password);
-
-            if (loginMember != null && loginMember.getMemberIdx() != 0) {
-
-                HttpSession session = request.getSession();
-                session.setAttribute("loginUser", loginMember);
-                session.setMaxInactiveInterval(30 * 60);
-
-                NotificationDAO notificationDAO = new NotificationDAO();
-                int memberIdx = loginMember.getMemberIdx();
-
-                notificationDAO.deleteNotification(memberIdx);
-
-                notificationDAO.insertNotification(memberIdx);
-
-                out.print("{\"success\": true, \"name\": \"" + loginMember.getName() + "\"}");
-
-
-            } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                out.print("{\"success\": false, \"message\": \"로그인 실패\"}");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+    public LoginController(MemberDAO memberDAO, NotificationDAO notificationDAO) {
+        this.memberDAO = memberDAO;
+        this.notificationDAO = notificationDAO;
     }
 
-    @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-        response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setStatus(HttpServletResponse.SC_OK);
-    }
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> login(
+            @RequestBody Map<String, String> body,
+            HttpSession session) {
 
-    private String extractValue(String json, String key) {
-        try {
-            String pattern = "\"" + key + "\":\"";
-            int start = json.indexOf(pattern) + pattern.length();
-            int end = json.indexOf("\"", start);
-            return json.substring(start, end);
-        } catch (Exception e) {
-            return "";
+        String email    = body.get("email");
+        String password = body.get("password");
+
+        MemberDTO loginMember = memberDAO.loginCheck(email, password);
+
+        if (loginMember != null && loginMember.getMemberIdx() != 0) {
+            session.setAttribute("loginUser", loginMember);
+            session.setMaxInactiveInterval(30 * 60);
+
+            int memberIdx = loginMember.getMemberIdx();
+            notificationDAO.deleteNotification(memberIdx);
+            notificationDAO.insertNotification(memberIdx);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "name", loginMember.getName()
+            ));
         }
+
+        return ResponseEntity.status(401).body(Map.of(
+                "success", false,
+                "message", "로그인 실패"
+        ));
     }
 }
