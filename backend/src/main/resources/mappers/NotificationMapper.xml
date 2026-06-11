@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gooodock.model.mapper.NotificationMapper">
+
+    <resultMap id="notificationResultMap" type="NotificationDTO">
+        <id     property="notificationIdx" column="notification_idx"/>
+        <result property="subscribeIdx"    column="subscribe_idx"/>
+        <result property="platformName"    column="platform_name"/>
+        <result property="platformPrice"   column="platform_price"/>
+        <result property="updateSubDate"   column="update_sub_date"
+                javaType="java.time.LocalDate"
+                typeHandler="org.apache.ibatis.type.LocalDateTypeHandler"/>
+        <result property="readYn"          column="read_yn"/>
+    </resultMap>
+
+    <select id="selectNotification" resultMap="notificationResultMap">
+        SELECT tn.notification_idx,
+        ts.subscribe_idx,
+        ts.platform_name,
+        ts.platform_price,
+        ts.update_sub_date,
+        tn.read_yn
+        FROM   tbl_subscription ts
+        INNER JOIN tbl_notification tn ON ts.subscribe_idx = tn.subscribe_idx
+        WHERE  ts.member_idx = #{memberIdx}
+    </select>
+
+    <update id="updateNotification" parameterType="NotificationDTO">
+        UPDATE tbl_notification
+        SET    read_yn   = #{readYn},
+        read_date =
+        <choose>
+            <when test="readYn == 'N'">NULL</when>
+            <otherwise>NOW()</otherwise>
+        </choose>
+        WHERE  notification_idx = #{notificationIdx}
+    </update>
+
+    <insert id="insertNotification">
+        INSERT INTO tbl_notification (member_idx, subscribe_idx, read_yn, read_date)
+        SELECT ts.member_idx, ts.subscribe_idx, 'N', NULL
+        FROM   tbl_subscription ts
+        WHERE  ts.member_idx = #{memberIdx}
+        AND  CURDATE() BETWEEN DATE_SUB(ts.update_sub_date, INTERVAL 10 DAY)
+        AND ts.update_sub_date
+        AND  NOT EXISTS (
+        SELECT 1
+        FROM   tbl_notification tn
+        WHERE  tn.member_idx   = ts.member_idx
+        AND  tn.subscribe_idx = ts.subscribe_idx
+        )
+    </insert>
+
+    <delete id="deleteNotification">
+        DELETE FROM tbl_notification
+        WHERE  member_idx  = #{memberIdx}
+        AND  subscribe_idx IN (
+        SELECT subscribe_idx
+        FROM   tbl_subscription
+        WHERE  update_sub_date &lt; CURDATE()
+        )
+    </delete>
+
+</mapper>
